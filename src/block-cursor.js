@@ -1,5 +1,4 @@
 const {Selection} = require("prosemirror-state")
-const {Decoration, DecorationSet} = require("prosemirror-view")
 const {Slice} = require("prosemirror-model")
 
 class BlockCursor extends Selection {
@@ -47,13 +46,6 @@ class BlockCursor extends Selection {
         return BlockCursor.valid($here) ? $here : null
       }
     }
-  }
-
-  static draw(state) {
-    if (!(state.selection instanceof BlockCursor)) return null
-    let node = document.createElement("div")
-    node.className = "ProseMirror-block-cursor"
-    return DecorationSet.create(state.doc, [Decoration.widget(state.selection.head, node, {key: "block-cursor"})])
   }
 }
 exports.BlockCursor = BlockCursor

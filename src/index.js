@@ -1,18 +1,19 @@
-const {Plugin} = require("prosemirror-state")
 const {keydownHandler} = require("prosemirror-keymap")
-const {TextSelection} = require("prosemirror-state")
+const {TextSelection, Plugin} = require("prosemirror-state")
+const {Decoration, DecorationSet} = require("prosemirror-view")
 
 const {BlockCursor} = require("./block-cursor")
 
 exports.blockCursor = function() {
   return new Plugin({
     props: {
-      decorations: BlockCursor.draw,
+      decorations: drawBlockCursor,
 
       createSelectionBetween(_view, $anchor, $head) {
         if ($anchor.pos == $head.pos && BlockCursor.valid($head)) return new BlockCursor($head)
       },
 
+      handleClick,
       handleKeyDown
     }
   })
@@ -40,4 +41,18 @@ function arrow(axis, dir) {
     if (dispatch) dispatch(state.tr.setSelection(new BlockCursor($found)))
     return true
   }
+}
+
+function handleClick(view, pos) {
+  let $pos = view.state.doc.resolve(pos)
+  if (!BlockCursor.valid($pos)) return false
+  view.dispatch(view.state.tr.setSelection(new BlockCursor($pos)))
+  return true
+}
+
+function drawBlockCursor(state) {
+  if (!(state.selection instanceof BlockCursor)) return null
+  let node = document.createElement("div")
+  node.className = "ProseMirror-block-cursor"
+  return DecorationSet.create(state.doc, [Decoration.widget(state.selection.head, node, {key: "block-cursor"})])
 }
