@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "ProseMirror plugin for cursors at normally impossible-to-reach positions",
   "main": "src/index.js",
+  "style": "block-cursor.css",
   "dependencies": {
     "prosemirror-keymap": "^0.22.0",
     "prosemirror-model": "^0.22.0",
