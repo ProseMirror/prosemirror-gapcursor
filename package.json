@@ -1,9 +1,9 @@
 {
-  "name": "prosemirror-block-cursor",
+  "name": "prosemirror-gapcursor",
   "version": "0.22.0",
   "description": "ProseMirror plugin for cursors at normally impossible-to-reach positions",
   "main": "dist/index.js",
-  "style": "style/block-cursor.css",
+  "style": "style/gapcursor.css",
   "dependencies": {
     "prosemirror-keymap": "^0.22.0",
     "prosemirror-model": "^0.22.0",

@@ -1,10 +1,10 @@
-.ProseMirror-block-cursor {
+.ProseMirror-gapcursor {
   display: none;
   pointer-events: none;
   position: absolute;
 }
 
-.ProseMirror-block-cursor:after {
+.ProseMirror-gapcursor:after {
   content: "";
   display: block;
   position: absolute;
@@ -20,6 +20,6 @@
   }
 }
 
-.ProseMirror-focused .ProseMirror-block-cursor {
+.ProseMirror-focused .ProseMirror-gapcursor {
   display: block;
 }

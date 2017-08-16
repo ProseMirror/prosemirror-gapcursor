@@ -7,6 +7,6 @@ You'll probably want to load `style/block-cursor.css`, which contains
 basic styling for the simulated cursor (as a short, blinking
 horizontal stripe).
 
-@blockCursor
+@gapCursor
 
-@BlockCursor
+@GapCursor

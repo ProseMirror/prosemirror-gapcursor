@@ -2,20 +2,20 @@ import {keydownHandler} from "prosemirror-keymap"
 import {TextSelection, Plugin} from "prosemirror-state"
 import {Decoration, DecorationSet} from "prosemirror-view"
 
-import {BlockCursor} from "./block-cursor"
+import {GapCursor} from "./gapcursor"
 
 // :: () → Plugin
-// Create a block cursor plugin. When enabled, this will capture
+// Create a gap cursor plugin. When enabled, this will capture
 // clicks near, or arrow-motion past, positions that don't have a
 // normally selectable position, and create a special kind of
 // selection at that position.
-export const blockCursor = function() {
+export const gapCursor = function() {
   return new Plugin({
     props: {
-      decorations: drawBlockCursor,
+      decorations: drawGapCursor,
 
       createSelectionBetween(_view, $anchor, $head) {
-        if ($anchor.pos == $head.pos && BlockCursor.valid($head)) return new BlockCursor($head)
+        if ($anchor.pos == $head.pos && GapCursor.valid($head)) return new GapCursor($head)
       },
 
       handleClick,
@@ -24,7 +24,7 @@ export const blockCursor = function() {
   })
 }
 
-export {BlockCursor}
+export {GapCursor}
 
 const handleKeyDown = keydownHandler({
   "ArrowLeft": arrow("horiz", -1),
@@ -43,23 +43,23 @@ function arrow(axis, dir) {
       mustMove = false
       $start = state.doc.resolve(dir > 0 ? $start.after() : $start.before())
     }
-    let $found = BlockCursor.findFrom($start, dir, mustMove)
+    let $found = GapCursor.findFrom($start, dir, mustMove)
     if (!$found) return false
-    if (dispatch) dispatch(state.tr.setSelection(new BlockCursor($found)))
+    if (dispatch) dispatch(state.tr.setSelection(new GapCursor($found)))
     return true
   }
 }
 
 function handleClick(view, pos) {
   let $pos = view.state.doc.resolve(pos)
-  if (!BlockCursor.valid($pos)) return false
-  view.dispatch(view.state.tr.setSelection(new BlockCursor($pos)))
+  if (!GapCursor.valid($pos)) return false
+  view.dispatch(view.state.tr.setSelection(new GapCursor($pos)))
   return true
 }
 
-function drawBlockCursor(state) {
-  if (!(state.selection instanceof BlockCursor)) return null
+function drawGapCursor(state) {
+  if (!(state.selection instanceof GapCursor)) return null
   let node = document.createElement("div")
-  node.className = "ProseMirror-block-cursor"
-  return DecorationSet.create(state.doc, [Decoration.widget(state.selection.head, node, {key: "block-cursor"})])
+  node.className = "ProseMirror-gapcursor"
+  return DecorationSet.create(state.doc, [Decoration.widget(state.selection.head, node, {key: "gapcursor"})])
 }

@@ -1,9 +1,9 @@
 import {Selection} from "prosemirror-state"
 import {Slice} from "prosemirror-model"
 
-// ::- Block cursor selections are represented using this class. Its
+// ::- Gap cursor selections are represented using this class. Its
 // `$anchor` and `$head` properties both point at the cursor position.
-export class BlockCursor extends Selection {
+export class GapCursor extends Selection {
   // : (ResolvedPos)
   constructor($pos) {
     super($pos, $pos)
@@ -11,24 +11,24 @@ export class BlockCursor extends Selection {
 
   map(doc, mapping) {
     let $pos = doc.resolve(mapping.map(this.$head))
-    return BlockCursor.valid($pos) ? new BlockCursor($pos) : Selection.near($pos)
+    return GapCursor.valid($pos) ? new GapCursor($pos) : Selection.near($pos)
   }
 
   content() { return Slice.empty }
 
   eq(other) {
-    return other instanceof BlockCursor && other.head == this.head
+    return other instanceof GapCursor && other.head == this.head
   }
 
   toJSON() {
-    return {type: "block-cursor", pos: this.head}
+    return {type: "gapcursor", pos: this.head}
   }
 
   static fromJSON(doc, json) {
-    return new BlockCursor(doc.resolve(json.pos))
+    return new GapCursor(doc.resolve(json.pos))
   }
 
-  getBookmark() { return new BlockBookmark(this.anchor) }
+  getBookmark() { return new GapBookmark(this.anchor) }
 
   static valid($pos) {
     if ($pos.depth > 0 && !$pos.parent.type.spec.isolating) return false
@@ -45,26 +45,26 @@ export class BlockCursor extends Selection {
           (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0)) {
         if (mustMove && d == $pos.depth) return null
         let $here = $pos.doc.resolve(dir < 0 ? $pos.before(d + 1) : $pos.after(d + 1))
-        return BlockCursor.valid($here) ? $here : null
+        return GapCursor.valid($here) ? $here : null
       }
     }
   }
 }
 
-BlockCursor.prototype.visible = false
+GapCursor.prototype.visible = false
 
-Selection.jsonID("block-cursor", BlockCursor)
+Selection.jsonID("gapcursor", GapCursor)
 
-class BlockBookmark {
+class GapBookmark {
   constructor(pos) {
     this.pos = pos
   }
   map(mapping) {
-    return new BlockBookmark(mapping.map(this.pos))
+    return new GapBookmark(mapping.map(this.pos))
   }
   resolve(doc) {
     let $pos = doc.resolve(this.pos)
-    return BlockCursor.valid($pos) ? new BlockCursor($pos) : Selection.near($pos)
+    return GapCursor.valid($pos) ? new GapCursor($pos) : Selection.near($pos)
   }
 }
 

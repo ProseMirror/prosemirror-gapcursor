@@ -1,4 +1,4 @@
-# prosemirror-block-cursor
+# prosemirror-gapcursor
 
 [ [**WEBSITE**](http://prosemirror.net) | [**ISSUES**](https://github.com/prosemirror/prosemirror/issues) | [**FORUM**](https://discuss.prosemirror.net) | [**GITTER**](https://gitter.im/ProseMirror/prosemirror) | [**CHANGELOG**](https://github.com/ProseMirror/prosemirror/blob/master/CHANGELOG.md) ]
 
@@ -6,7 +6,7 @@ ProseMirror is a well-behaved rich semantic content editor based on
 contentEditable, with support for collaborative editing and custom
 document schemas.
 
-This [plugin](http://prosemirror.net/docs/ref/#block-cursor)
+This [plugin](http://prosemirror.net/docs/ref/#gapcursor)
 implements a block-level cursor that can be used to focus places that
 don't allow regular selection (such as positions that have a leaf
 block node, table, or the end of the document both before and after
