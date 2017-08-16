@@ -1,8 +1,8 @@
 {
   "name": "prosemirror-block-cursor",
-  "version": "0.0.1",
+  "version": "0.22.0",
   "description": "ProseMirror plugin for cursors at normally impossible-to-reach positions",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "style": "style/block-cursor.css",
   "dependencies": {
     "prosemirror-keymap": "^0.22.0",
@@ -11,8 +11,6 @@
     "prosemirror-view": "^0.22.0"
   },
   "devDependencies": {
-    "ist": "^1.0.0",
-    "mocha": "^3.2.0",
     "prosemirror-commands": "^0.22.0",
     "prosemirror-example-setup": "^0.22.0",
     "prosemirror-menu": "^0.22.0",
@@ -25,7 +23,6 @@
     "rollup-watch": "^3.2.0"
   },
   "scripts": {
-    "test": "mocha test/test-*.js",
     "build": "rollup -c",
     "watch": "rollup -w -c"
   }

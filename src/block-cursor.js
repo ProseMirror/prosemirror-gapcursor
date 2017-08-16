@@ -1,8 +1,10 @@
 import {Selection} from "prosemirror-state"
 import {Slice} from "prosemirror-model"
 
+// ::- Block cursor selections are represented using this class. Its
+// `$anchor` and `$head` properties both point at the cursor position.
 export class BlockCursor extends Selection {
-  // :: (ResolvedPos)
+  // : (ResolvedPos)
   constructor($pos) {
     super($pos, $pos)
   }

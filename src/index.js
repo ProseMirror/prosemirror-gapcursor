@@ -4,6 +4,11 @@ import {Decoration, DecorationSet} from "prosemirror-view"
 
 import {BlockCursor} from "./block-cursor"
 
+// :: () → Plugin
+// Create a block cursor plugin. When enabled, this will capture
+// clicks near, or arrow-motion past, positions that don't have a
+// normally selectable position, and create a special kind of
+// selection at that position.
 export const blockCursor = function() {
   return new Plugin({
     props: {
@@ -18,6 +23,8 @@ export const blockCursor = function() {
     }
   })
 }
+
+export {BlockCursor}
 
 const handleKeyDown = keydownHandler({
   "ArrowLeft": arrow("horiz", -1),
