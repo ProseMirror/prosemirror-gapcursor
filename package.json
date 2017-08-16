@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -w -c"
+    "watch": "rollup -w -c",
+    "prepare": "npm run build"
   }
 }
