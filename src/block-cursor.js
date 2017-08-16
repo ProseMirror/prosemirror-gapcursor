@@ -1,7 +1,7 @@
-const {Selection} = require("prosemirror-state")
-const {Slice} = require("prosemirror-model")
+import {Selection} from "prosemirror-state"
+import {Slice} from "prosemirror-model"
 
-class BlockCursor extends Selection {
+export class BlockCursor extends Selection {
   // :: (ResolvedPos)
   constructor($pos) {
     super($pos, $pos)
@@ -48,7 +48,6 @@ class BlockCursor extends Selection {
     }
   }
 }
-exports.BlockCursor = BlockCursor
 
 BlockCursor.prototype.visible = false
 

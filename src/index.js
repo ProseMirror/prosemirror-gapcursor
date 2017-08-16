@@ -1,10 +1,10 @@
-const {keydownHandler} = require("prosemirror-keymap")
-const {TextSelection, Plugin} = require("prosemirror-state")
-const {Decoration, DecorationSet} = require("prosemirror-view")
+import {keydownHandler} from "prosemirror-keymap"
+import {TextSelection, Plugin} from "prosemirror-state"
+import {Decoration, DecorationSet} from "prosemirror-view"
 
-const {BlockCursor} = require("./block-cursor")
+import {BlockCursor} from "./block-cursor"
 
-exports.blockCursor = function() {
+export const blockCursor = function() {
   return new Plugin({
     props: {
       decorations: drawBlockCursor,
