@@ -5,10 +5,10 @@ import {Decoration, DecorationSet} from "prosemirror-view"
 import {GapCursor} from "./gapcursor"
 
 // :: () → Plugin
-// Create a gap cursor plugin. When enabled, this will capture
-// clicks near, or arrow-motion past, positions that don't have a
-// normally selectable position, and create a special kind of
-// selection at that position.
+// Create a gap cursor plugin. When enabled, this will capture clicks
+// near and arrow-key-motion past places that don't have a normally
+// selectable position nearby, and create a gap cursor selection for
+// them.
 export const gapCursor = function() {
   return new Plugin({
     props: {
