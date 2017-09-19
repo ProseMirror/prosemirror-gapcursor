@@ -41,8 +41,7 @@ export class GapCursor extends Selection {
   static findFrom($pos, dir, mustMove) {
     for (let d = $pos.depth;; d--) {
       let parent = $pos.node(d)
-      if (d == 0 || parent.type.spec.isolating ||
-          (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0)) {
+      if (d == 0 || (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0)) {
         if (mustMove && d == $pos.depth) return null
         let $here = $pos.doc.resolve(dir < 0 ? $pos.before(d + 1) : $pos.after(d + 1))
         return GapCursor.valid($here) ? $here : null
