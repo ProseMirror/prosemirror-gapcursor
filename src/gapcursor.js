@@ -1,5 +1,6 @@
 import {Selection} from "prosemirror-state"
-import {Slice} from "prosemirror-model"
+import {Slice, Fragment} from "prosemirror-model"
+import {replaceStep} from "prosemirror-transform"
 
 // ::- Gap cursor selections are represented using this class. Its
 // `$anchor` and `$head` properties both point at the cursor position.
@@ -15,6 +16,39 @@ export class GapCursor extends Selection {
   }
 
   content() { return Slice.empty }
+
+  replace(tr, content = Slice.empty) {
+    if (content.size == 0) return
+    let $pos = this.$head, before = $pos.nodeBefore, after = $pos.nodeAfter
+    // Searches for a position where the content can be inserted.
+    // Tries precise position first, then positions before it (by
+    // entering nodes starting directly before), then positions after.
+    for (let dir = -1, pos = $pos.pos;;) {
+      let step = replaceStep(tr.doc, pos, pos, content)
+      if (step && step.slice.size) {
+        tr.step(step)
+        break
+      }
+      if (dir < 0) {
+        if (!before || before.type.spec.isolating) {
+          dir = 1
+          pos = $pos.pos
+        } else {
+          before = before.lastChild
+          pos--
+        }
+      }
+      if (dir > 0) {
+        if (!after || after.type.spec.isolating) break
+        after = after.firstChild
+        pos++
+      }
+    }
+  }
+
+  replaceWith(tr, node) {
+    this.replace(tr, new Slice(Fragment.from(node), 0, 0))
+  }
 
   eq(other) {
     return other instanceof GapCursor && other.head == this.head
