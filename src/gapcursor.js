@@ -10,7 +10,7 @@ export class GapCursor extends Selection {
   }
 
   map(doc, mapping) {
-    let $pos = doc.resolve(mapping.map(this.$head))
+    let $pos = doc.resolve(mapping.map(this.head))
     return GapCursor.valid($pos) ? new GapCursor($pos) : Selection.near($pos)
   }
 
