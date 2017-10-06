@@ -65,11 +65,10 @@ export class GapCursor extends Selection {
   getBookmark() { return new GapBookmark(this.anchor) }
 
   static valid($pos) {
-    if ($pos.depth > 0 && !$pos.parent.type.spec.isolating) return false
+    if ($pos.parent.inlineContent || $pos.parent.type.spec.allowGapCursor === false) return false
     let index = $pos.index()
-    // FIXME handle row/table exception
-    return (index == 0 || closedAt($pos.parent.child(index - 1), 1)) &&
-      (index == $pos.parent.childCount || closedAt($pos.parent.child(index), -1))
+    return (index == 0 ? $pos.depth == 0 : closedAt($pos.parent.child(index - 1), 1)) &&
+      (index == $pos.parent.childCount ? $pos.depth == 0 : closedAt($pos.parent.child(index), -1))
   }
 
   static findFrom($pos, dir, mustMove) {
