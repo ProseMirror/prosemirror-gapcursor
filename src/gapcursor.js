@@ -23,8 +23,15 @@ export class GapCursor extends Selection {
     // Searches for a position where the content can be inserted.
     // Tries precise position first, then positions before it (by
     // entering nodes starting directly before), then positions after.
+    let textBlockWrapper = content.content.content.every(node => node.isInline) ?
+      Object.values($pos.doc.type.schema.nodes).find(node => node.spec.defaultTextBlock) :
+      false
+
     for (let dir = -1, pos = $pos.pos;;) {
-      let step = replaceStep(tr.doc, pos, pos, content)
+      let slice = !$pos.parent.isTextblock && textBlockWrapper ?
+        new Slice(Fragment.from(textBlockWrapper.create(null, content.content.content)), 0, 0) :
+        content
+      let step = replaceStep(tr.doc, pos, pos, slice)
       if (step && step.slice.size) {
         tr.step(step)
         break
@@ -64,20 +71,24 @@ export class GapCursor extends Selection {
 
   getBookmark() { return new GapBookmark(this.anchor) }
 
-  static valid($pos) {
+  static valid($pos, topDepth) {
     if ($pos.parent.inlineContent || $pos.parent.type.spec.allowGapCursor === false) return false
     let index = $pos.index()
-    return (index == 0 ? $pos.depth == 0 : closedAt($pos.parent.child(index - 1), 1)) &&
-      (index == $pos.parent.childCount ? $pos.depth == 0 : closedAt($pos.parent.child(index), -1))
+    return (index == 0 ? $pos.depth == topDepth : closedAt($pos.parent.child(index - 1), 1)) &&
+      (index == $pos.parent.childCount ? $pos.depth == topDepth : closedAt($pos.parent.child(index), -1))
   }
 
   static findFrom($pos, dir, mustMove) {
+    let topDepth = $pos.depth
+    for (let e = $pos.depth; e > -1; e--) {
+      if ($pos.node(e).type.spec.allowGapCursor !== false) topDepth = e
+    }
     for (let d = $pos.depth;; d--) {
       let parent = $pos.node(d)
-      if (d == 0 || (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0)) {
+      if (d == topDepth || (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0)) {
         if (mustMove && d == $pos.depth) return null
         let $here = $pos.doc.resolve(dir < 0 ? $pos.before(d + 1) : $pos.after(d + 1))
-        return GapCursor.valid($here) ? $here : null
+        return GapCursor.valid($here, topDepth) ? $here : null
       }
     }
   }
