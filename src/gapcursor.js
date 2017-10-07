@@ -24,7 +24,7 @@ export class GapCursor extends Selection {
     // Tries precise position first, then positions before it (by
     // entering nodes starting directly before), then positions after.
     let textBlockWrapper = content.content.content.every(node => node.isInline) ?
-      Object.values($pos.doc.type.schema.nodes).find(node => node.spec.defaultTextBlock) :
+      Object.values($pos.doc.type.schema.nodes).find(node => node.isTextblock) :
       false
 
     for (let dir = -1, pos = $pos.pos;;) {
