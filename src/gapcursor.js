@@ -1,6 +1,5 @@
 import {Selection} from "prosemirror-state"
-import {Slice, Fragment} from "prosemirror-model"
-import {replaceStep} from "prosemirror-transform"
+import {Slice} from "prosemirror-model"
 
 // ::- Gap cursor selections are represented using this class. Its
 // `$anchor` and `$head` properties both point at the cursor position.
@@ -17,39 +16,6 @@ export class GapCursor extends Selection {
 
   content() { return Slice.empty }
 
-  replace(tr, content = Slice.empty) {
-    if (content.size == 0) return
-    let $pos = this.$head, before = $pos.nodeBefore, after = $pos.nodeAfter
-    // Searches for a position where the content can be inserted.
-    // Tries precise position first, then positions before it (by
-    // entering nodes starting directly before), then positions after.
-    for (let dir = -1, pos = $pos.pos;;) {
-      let step = replaceStep(tr.doc, pos, pos, content)
-      if (step && step.slice.size) {
-        tr.step(step)
-        break
-      }
-      if (dir < 0) {
-        if (!before || before.type.spec.isolating) {
-          dir = 1
-          pos = $pos.pos
-        } else {
-          before = before.lastChild
-          pos--
-        }
-      }
-      if (dir > 0) {
-        if (!after || after.type.spec.isolating) break
-        after = after.firstChild
-        pos++
-      }
-    }
-  }
-
-  replaceWith(tr, node) {
-    this.replace(tr, new Slice(Fragment.from(node), 0, 0))
-  }
-
   eq(other) {
     return other instanceof GapCursor && other.head == this.head
   }
@@ -65,21 +31,42 @@ export class GapCursor extends Selection {
   getBookmark() { return new GapBookmark(this.anchor) }
 
   static valid($pos) {
-    if ($pos.parent.inlineContent || $pos.parent.type.spec.allowGapCursor === false) return false
-    let index = $pos.index()
-    return (index == 0 ? $pos.depth == 0 : closedAt($pos.parent.child(index - 1), 1)) &&
-      (index == $pos.parent.childCount ? $pos.depth == 0 : closedAt($pos.parent.child(index), -1))
+    let parent = $pos.parent
+    if (parent.isTextblock || !closedBefore($pos) || !closedAfter($pos)) return false
+    let override = parent.type.spec.allowGapCursor
+    if (override != null) return override
+    let deflt = parent.contentMatchAt($pos.index()).defaultType
+    return deflt && deflt.isTextblock
   }
 
   static findFrom($pos, dir, mustMove) {
+    if (!mustMove && GapCursor.valid($pos)) return $pos
+
+    let pos = $pos.pos, next = null
+    // Scan up from this position
     for (let d = $pos.depth;; d--) {
       let parent = $pos.node(d)
-      if (d == 0 || (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0)) {
-        if (mustMove && d == $pos.depth) return null
-        let $here = $pos.doc.resolve(dir < 0 ? $pos.before(d + 1) : $pos.after(d + 1))
-        return GapCursor.valid($here) ? $here : null
+      if (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0) {
+        next = parent.maybeChild(dir > 0 ? $pos.indexAfter(d) : $pos.index(d) - 1)
+        break
+      } else if (d == 0) {
+        return null
       }
+      pos += dir
+      let $cur = $pos.doc.resolve(pos)
+      if (GapCursor.valid($cur)) return $cur
     }
+
+    // And then down into the next node
+    for (;;) {
+      next = dir > 0 ? next.firstChild : next.lastChild
+      if (!next) break
+      pos += dir
+      let $cur = $pos.doc.resolve(pos)
+      if (GapCursor.valid($cur)) return $cur
+    }
+
+    return null
   }
 }
 
@@ -100,10 +87,29 @@ class GapBookmark {
   }
 }
 
-function closedAt(node, side) {
-  for (;;) {
-    if (node.inlineContent) return false
-    if (node.childCount == 0 || node.type.spec.isolating) return true
-    node = side < 0 ? node.firstChild : node.lastChild
+function closedBefore($pos) {
+  for (let d = $pos.depth; d >= 0; d--) {
+    let index = $pos.index(d)
+    // At the start of this parent, look at next one
+    if (index == 0) continue
+    // See if the node before (or its first ancestor) is closed
+    for (let before = $pos.node(d).child(index - 1);; before = before.lastChild) {
+      if (before.isTextblock) return false
+      if (before.childCount == 0 || before.isAtom || before.type.spec.isolating) return true
+    }
   }
+  // Hit start of document
+  return true
+}
+
+function closedAfter($pos) {
+  for (let d = $pos.depth; d >= 0; d--) {
+    let index = $pos.indexAfter(d), parent = $pos.node(d)
+    if (index == parent.childCount) continue
+    for (let after = parent.child(index);; after = after.firstChild) {
+      if (after.isTextblock) return false
+      if (after.childCount == 0 || after.isAtom || after.type.spec.isolating) return true
+    }
+  }
+  return true
 }

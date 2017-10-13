@@ -7,9 +7,11 @@ You'll probably want to load `style/block-cursor.css`, which contains
 basic styling for the simulated cursor (as a short, blinking
 horizontal stripe).
 
-In some types of nodes, such as tables and table rows, you might want
-to explicitly disallow gap cursors by adding an `allowGapCursor:
-false` property to their node specs.
+By default, gap cursor are only allowed in places where the default
+content node (in the schema content constraints) is a textblock node.
+You can customize this by adding an `allowGapCursor` property to your
+node specs—if it's true, gap cursor are allowed everywhere in that
+node, if it's `false` they are never allowed.
 
 @gapCursor
 
