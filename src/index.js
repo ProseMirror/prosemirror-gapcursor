@@ -1,5 +1,5 @@
 import {keydownHandler} from "prosemirror-keymap"
-import {TextSelection, Plugin} from "prosemirror-state"
+import {TextSelection, NodeSelection, Plugin} from "prosemirror-state"
 import {Decoration, DecorationSet} from "prosemirror-view"
 
 import {GapCursor} from "./gapcursor"
@@ -53,9 +53,11 @@ function arrow(axis, dir) {
   }
 }
 
-function handleClick(view, pos) {
+function handleClick(view, pos, event) {
   let $pos = view.state.doc.resolve(pos)
   if (!GapCursor.valid($pos)) return false
+  let {inside} = view.posAtCoords({left: event.clientX, top: event.clientY})
+  if (inside > -1 && NodeSelection.isSelectable(view.state.doc.nodeAt(inside))) return false
   view.dispatch(view.state.tr.setSelection(new GapCursor($pos)))
   return true
 }
