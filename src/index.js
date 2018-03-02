@@ -39,8 +39,16 @@ const handleKeyDown = keydownHandler({
 function arrow(axis, dir) {
   let dirStr = axis == "vert" ? (dir > 0 ? "down" : "up") : (dir > 0 ? "right" : "left")
   return function(state, dispatch, view) {
-    let sel = state.selection
-    let $start = dir > 0 ? sel.$to : sel.$from, mustMove = sel.empty
+    let sel = state.selection, $start, mustMove
+    if (sel instanceof NodeSelection) {
+      // In case of node selections, look for a valid position starting with the end/start
+      // of the node itself : [<node>] ==right==> <node>|
+      $start = dir > 0 ? sel.$from : sel.$to
+      mustMove = false
+    } else {
+      $start = dir > 0 ? sel.$to : sel.$from
+      mustMove = sel.empty
+    }
     if (sel instanceof TextSelection) {
       if (!view.endOfTextblock(dirStr)) return false
       mustMove = false
