@@ -1,0 +1,20 @@
+## 1.0.1 (2018-02-16)
+
+### Bug fixes
+
+Prevent issue where clicking on a selectable node near a valid gap cursor position would create a gap cursor rather than select the node.
+
+## 1.0.0 (2017-10-13)
+
+### New features
+
+Valid gap cursor positions are not determined in a way that allows them inside nested nodes. By default, any position where a textblock can be inserted is valid gap cursor position.
+
+Nodes can override whether they allow gap cursors with the `allowGapCursor` property in their spec.
+
+## 0.23.1 (2017-09-19)
+
+### Bug fixes
+
+Moving out of a table with the arrow keys now creates a gap cursor when appropriate.
+
