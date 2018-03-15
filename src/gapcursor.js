@@ -25,6 +25,7 @@ export class GapCursor extends Selection {
   }
 
   static fromJSON(doc, json) {
+    if (typeof json.pos != "number") throw new RangeError("Invalid input for GapCursor.fromJSON")
     return new GapCursor(doc.resolve(json.pos))
   }
 
