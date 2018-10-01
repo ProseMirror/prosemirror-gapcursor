@@ -95,8 +95,8 @@ function closedBefore($pos) {
     if (index == 0) continue
     // See if the node before (or its first ancestor) is closed
     for (let before = $pos.node(d).child(index - 1);; before = before.lastChild) {
-      if (before.isTextblock) return false
-      if (before.childCount == 0 || before.isAtom || before.type.spec.isolating) return true
+      if ((before.childCount == 0 && !before.inlineContent) || before.isAtom || before.type.spec.isolating) return true
+      if (before.inlineContent) return false
     }
   }
   // Hit start of document
@@ -108,8 +108,8 @@ function closedAfter($pos) {
     let index = $pos.indexAfter(d), parent = $pos.node(d)
     if (index == parent.childCount) continue
     for (let after = parent.child(index);; after = after.firstChild) {
-      if (after.isTextblock) return false
-      if (after.childCount == 0 || after.isAtom || after.type.spec.isolating) return true
+      if ((after.childCount == 0 && !after.inlineContent) || after.isAtom || after.type.spec.isolating) return true
+      if (after.inlineContent) return false
     }
   }
   return true
