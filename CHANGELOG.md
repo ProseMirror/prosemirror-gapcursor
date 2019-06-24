@@ -1,3 +1,9 @@
+## 1.0.4 (2019-06-24)
+
+### Bug fixes
+
+Do not show a gap cursor when the view isn't editable.
+
 ## 1.0.3 (2018-10-01)
 
 ### Bug fixes
