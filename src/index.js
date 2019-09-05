@@ -54,7 +54,7 @@ function arrow(axis, dir) {
 }
 
 function handleClick(view, pos, event) {
-  if (view.someProp("editable", editable => editable(view.state) === false)) return false
+  if (!view.editable) return false
   let $pos = view.state.doc.resolve(pos)
   if (!GapCursor.valid($pos)) return false
   let {inside} = view.posAtCoords({left: event.clientX, top: event.clientY})
