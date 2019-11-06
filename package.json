@@ -4,6 +4,7 @@
   "description": "ProseMirror plugin for cursors at normally impossible-to-reach positions",
   "license": "MIT",
   "main": "dist/index.js",
+  "module": "src/index.js",
   "style": "style/gapcursor.css",
   "dependencies": {
     "prosemirror-keymap": "^1.0.0",
