@@ -42,7 +42,7 @@ function arrow(axis, dir) {
     let sel = state.selection
     let $start = dir > 0 ? sel.$to : sel.$from, mustMove = sel.empty
     if (sel instanceof TextSelection) {
-      if (!view.endOfTextblock(dirStr)) return false
+      if (!view.endOfTextblock(dirStr) || $start.depth == 0) return false
       mustMove = false
       $start = state.doc.resolve(dir > 0 ? $start.after() : $start.before())
     }
