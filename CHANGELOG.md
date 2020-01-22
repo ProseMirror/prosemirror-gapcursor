@@ -1,3 +1,9 @@
+## 1.1.3 (2020-01-22)
+
+### Bug fixes
+
+Fix a crash in documents that have a textblock as top node.
+
 ## 1.1.2 (2019-11-20)
 
 ### Bug fixes
