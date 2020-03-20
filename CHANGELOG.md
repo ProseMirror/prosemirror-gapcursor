@@ -1,3 +1,9 @@
+## 1.1.4 (2020-03-20)
+
+### Bug fixes
+
+Improve behavior around unselectable block nodes.
+
 ## 1.1.3 (2020-01-22)
 
 ### Bug fixes
