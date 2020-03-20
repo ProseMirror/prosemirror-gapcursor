@@ -1,4 +1,4 @@
-import {Selection} from "prosemirror-state"
+import {Selection, NodeSelection} from "prosemirror-state"
 import {Slice} from "prosemirror-model"
 
 // ::- Gap cursor selections are represented using this class. Its
@@ -41,33 +41,40 @@ export class GapCursor extends Selection {
   }
 
   static findFrom($pos, dir, mustMove) {
-    if (!mustMove && GapCursor.valid($pos)) return $pos
-
-    let pos = $pos.pos, next = null
-    // Scan up from this position
-    for (let d = $pos.depth;; d--) {
-      let parent = $pos.node(d)
-      if (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0) {
-        next = parent.maybeChild(dir > 0 ? $pos.indexAfter(d) : $pos.index(d) - 1)
-        break
-      } else if (d == 0) {
-        return null
+    search: for (;;) {
+      if (!mustMove && GapCursor.valid($pos)) return $pos
+      let pos = $pos.pos, next = null
+      // Scan up from this position
+      for (let d = $pos.depth;; d--) {
+        let parent = $pos.node(d)
+        if (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0) {
+          next = parent.child(dir > 0 ? $pos.indexAfter(d) : $pos.index(d) - 1)
+          break
+        } else if (d == 0) {
+          return null
+        }
+        pos += dir
+        let $cur = $pos.doc.resolve(pos)
+        if (GapCursor.valid($cur)) return $cur
       }
-      pos += dir
-      let $cur = $pos.doc.resolve(pos)
-      if (GapCursor.valid($cur)) return $cur
-    }
 
-    // And then down into the next node
-    for (;;) {
-      next = dir > 0 ? next.firstChild : next.lastChild
-      if (!next) break
-      pos += dir
-      let $cur = $pos.doc.resolve(pos)
-      if (GapCursor.valid($cur)) return $cur
-    }
+      // And then down into the next node
+      for (;;) {
+        let inside = dir > 0 ? next.firstChild : next.lastChild
+        if (!inside) {
+          if (NodeSelection.isSelectable(next)) break
+          $pos = $pos.doc.resolve(pos + next.nodeSize * dir)
+          mustMove = false
+          continue search
+        }
+        next = inside
+        pos += dir
+        let $cur = $pos.doc.resolve(pos)
+        if (GapCursor.valid($cur)) return $cur
+      }
 
-    return null
+      return null
+    }
   }
 }
 
