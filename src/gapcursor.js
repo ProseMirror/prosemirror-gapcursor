@@ -62,10 +62,12 @@ export class GapCursor extends Selection {
       for (;;) {
         let inside = dir > 0 ? next.firstChild : next.lastChild
         if (!inside) {
-          if (NodeSelection.isSelectable(next)) break
-          $pos = $pos.doc.resolve(pos + next.nodeSize * dir)
-          mustMove = false
-          continue search
+          if (next.isAtom && !next.isText && !NodeSelection.isSelectable(next)) {
+            $pos = $pos.doc.resolve(pos + next.nodeSize * dir)
+            mustMove = false
+            continue search
+          }
+          break
         }
         next = inside
         pos += dir
