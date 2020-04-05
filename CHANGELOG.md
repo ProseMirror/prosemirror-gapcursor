@@ -1,3 +1,9 @@
+## 1.1.5 (2020-04-05)
+
+### Bug fixes
+
+Fix an issue where the gap cursor plugin would sometimes cause perfectly selectable content to be skipped when moving the selection with the arrow keys.
+
 ## 1.1.4 (2020-03-20)
 
 ### Bug fixes
