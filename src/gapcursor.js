@@ -4,7 +4,8 @@ import {Slice} from "prosemirror-model"
 // ::- Gap cursor selections are represented using this class. Its
 // `$anchor` and `$head` properties both point at the cursor position.
 export class GapCursor extends Selection {
-  // : (ResolvedPos)
+  // :: (ResolvedPos)
+  // Create a gap cursor.
   constructor($pos) {
     super($pos, $pos)
   }
