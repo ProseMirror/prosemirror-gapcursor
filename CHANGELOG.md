@@ -1,3 +1,9 @@
+## 1.2.0 (2021-09-20)
+
+### New features
+
+The `GapCursor` constructor is now public.
+
 ## 1.1.5 (2020-04-05)
 
 ### Bug fixes
