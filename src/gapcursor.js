@@ -100,11 +100,14 @@ class GapBookmark {
 
 function closedBefore($pos) {
   for (let d = $pos.depth; d >= 0; d--) {
-    let index = $pos.index(d)
+    let index = $pos.index(d), parent = $pos.node(d)
     // At the start of this parent, look at next one
-    if (index == 0) continue
+    if (index == 0) {
+      if (parent.type.spec.isolating) return true
+      continue
+    }
     // See if the node before (or its first ancestor) is closed
-    for (let before = $pos.node(d).child(index - 1);; before = before.lastChild) {
+    for (let before = parent.child(index - 1);; before = before.lastChild) {
       if ((before.childCount == 0 && !before.inlineContent) || before.isAtom || before.type.spec.isolating) return true
       if (before.inlineContent) return false
     }
@@ -116,7 +119,10 @@ function closedBefore($pos) {
 function closedAfter($pos) {
   for (let d = $pos.depth; d >= 0; d--) {
     let index = $pos.indexAfter(d), parent = $pos.node(d)
-    if (index == parent.childCount) continue
+    if (index == parent.childCount) {
+      if (parent.type.spec.isolating) return true
+      continue
+    }
     for (let after = parent.child(index);; after = after.firstChild) {
       if ((after.childCount == 0 && !after.inlineContent) || after.isAtom || after.type.spec.isolating) return true
       if (after.inlineContent) return false
