@@ -1,3 +1,9 @@
+## 1.2.1 (2021-12-20)
+
+### Bug fixes
+
+Fix an issue where a gap cursor would fail to show up at the start or end of some isolating nodes.
+
 ## 1.2.0 (2021-09-20)
 
 ### New features
