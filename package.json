@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-gapcursor",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "ProseMirror plugin for cursors at normally impossible-to-reach positions",
   "main": "dist/index.js",
   "module": "dist/index.es.js",

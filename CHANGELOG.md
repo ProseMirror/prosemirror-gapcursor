@@ -1,3 +1,9 @@
+## 1.2.2 (2022-02-25)
+
+### Bug fixes
+
+Make sure compositions started from a gap cursor have their inline context created in advance, so that they don't get aborted right away.
+
 ## 1.2.1 (2021-12-20)
 
 ### Bug fixes
