@@ -1,5 +1,6 @@
 import {keydownHandler} from "prosemirror-keymap"
 import {TextSelection, NodeSelection, Plugin} from "prosemirror-state"
+import {Fragment, Slice} from "prosemirror-model"
 import {Decoration, DecorationSet} from "prosemirror-view"
 
 import {GapCursor} from "./gapcursor"
@@ -22,7 +23,8 @@ export const gapCursor = function() {
       },
 
       handleClick,
-      handleKeyDown
+      handleKeyDown,
+      handleDOMEvents: {beforeinput}
     }
   })
 }
@@ -61,6 +63,25 @@ function handleClick(view, pos, event) {
   if (inside > -1 && NodeSelection.isSelectable(view.state.doc.nodeAt(inside))) return false
   view.dispatch(view.state.tr.setSelection(new GapCursor($pos)))
   return true
+}
+
+// This is a hack that, when a composition starts while a gap cursor
+// is active, quickly creates an inline context for the composition to
+// happen in, to avoid it being aborted by the DOM selection being
+// moved into a valid position.
+function beforeinput(view, event) {
+  if (event.inputType != "insertCompositionText" || !(view.state.selection instanceof GapCursor)) return false
+
+  let {$from} = view.state.selection
+  let insert = $from.parent.contentMatchAt($from.index()).findWrapping(view.state.schema.nodes.text)
+  if (!insert) return false
+
+  let frag = Fragment.empty
+  for (let i = insert.length - 1; i >= 0; i--) frag = Fragment.from(insert[i].createAndFill(null, frag))
+  let tr = view.state.tr.replace($from.pos, $from.pos, new Slice(frag, 0, 0))
+  tr.setSelection(TextSelection.near(tr.doc.resolve($from.pos + 1)))
+  view.dispatch(tr)
+  return false
 }
 
 function drawGapCursor(state) {
