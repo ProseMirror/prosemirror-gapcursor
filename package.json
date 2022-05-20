@@ -34,6 +34,6 @@
     "@prosemirror/buildhelper": "^0.1.5"
   },
   "scripts": {
-    "prepare": "pm-buildhelper src/gapcursor.ts"
+    "prepare": "pm-buildhelper src/index.ts"
   }
 }
