@@ -12,7 +12,7 @@ import {GapCursor} from "./gapcursor"
 /// `ProseMirror-gapcursor`. You can either include
 /// `style/gapcursor.css` from the package's directory or add your own
 /// styles to make it visible.
-export const gapCursor = function() {
+export function gapCursor(): Plugin {
   return new Plugin({
     props: {
       decorations: drawGapCursor,
