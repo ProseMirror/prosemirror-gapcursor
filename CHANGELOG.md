@@ -1,3 +1,9 @@
+## 1.3.1 (2022-06-07)
+
+### Bug fixes
+
+Export CSS file from package.json.
+
 ## 1.3.0 (2022-05-30)
 
 ### New features
