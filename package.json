@@ -13,7 +13,7 @@
     },
     "./style/gapcursor.css": "./style/gapcursor.css"
   },
-  "sideEffects": false,
+  "sideEffects": ["./style/gapcursor.css"],
   "style": "style/gapcursor.css",
   "license": "MIT",
   "maintainers": [
