@@ -1,5 +1,5 @@
 import {keydownHandler} from "prosemirror-keymap"
-import {TextSelection, NodeSelection, Plugin, Command, EditorState} from "prosemirror-state"
+import {TextSelection, NodeSelection, Plugin, Command, EditorState, PluginKey} from "prosemirror-state"
 import {Fragment, Slice} from "prosemirror-model"
 import {Decoration, DecorationSet, EditorView} from "prosemirror-view"
 
@@ -14,6 +14,7 @@ import {GapCursor} from "./gapcursor"
 /// styles to make it visible.
 export function gapCursor(): Plugin {
   return new Plugin({
+    key: new PluginKey("gapCursor"),
     props: {
       decorations: drawGapCursor,
 
