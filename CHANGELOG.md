@@ -1,3 +1,9 @@
+## 1.4.0 (2025-10-15)
+
+### New features
+
+Nodes can now set a `createGapCursor: true` property on their spec to allow gap cursors to appear next to them.
+
 ## 1.3.2 (2023-05-17)
 
 ### Bug fixes
