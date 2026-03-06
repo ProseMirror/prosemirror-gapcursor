@@ -37,7 +37,7 @@ export class GapCursor extends Selection {
   /// @internal
   static valid($pos: ResolvedPos) {
     let parent = $pos.parent
-    if (parent.isTextblock || !closedBefore($pos) || !closedAfter($pos)) return false
+    if (parent.isTextblock || parent.inlineContent || !closedBefore($pos) || !closedAfter($pos)) return false
     let override = parent.type.spec.allowGapCursor
     if (override != null) return override
     let deflt = parent.contentMatchAt($pos.index()).defaultType
