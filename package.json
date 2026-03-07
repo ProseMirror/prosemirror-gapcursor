@@ -13,9 +13,7 @@
     },
     "./style/gapcursor.css": "./style/gapcursor.css"
   },
-  "sideEffects": [
-    "./style/gapcursor.css"
-  ],
+  "sideEffects": ["./style/gapcursor.css"],
   "style": "style/gapcursor.css",
   "license": "MIT",
   "maintainers": [
@@ -36,11 +34,10 @@
     "prosemirror-view": "^1.0.0"
   },
   "devDependencies": {
-    "@prosemirror/buildhelper": "^0.1.5",
-    "vitest": "^4.0.18"
+    "@prosemirror/buildhelper": "^0.1.5"
   },
   "scripts": {
     "prepare": "pm-buildhelper src/index.ts",
-    "test": "vitest run"
+    "test": "pm-runtests"
   }
 }
