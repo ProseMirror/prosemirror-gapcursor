@@ -1,3 +1,9 @@
+## 1.4.1 (2026-03-10)
+
+### Bug fixes
+
+Make sure no gap cursors are created inside inline nodes with content.
+
 ## 1.4.0 (2025-10-15)
 
 ### New features
